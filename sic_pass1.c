@@ -1,68 +1,89 @@
-#include "myLib.h";
+#include "myLib.h"
 
-int main()
+void add_sym_tab()
 {
-    int value;
-    int flag;
-    int size = 1;
-    int LOCCTR = 0;
+    SYMTAB *node = (SYMTAB *)malloc(sizeof(SYMTAB));
+    strcpy(node->LABEL, LABEL);
+    node->ADDR = LOCCTR;
+    node->link = NULL;
 
-    FILE *open_sic_codes = fopen("files/input.sic", "r");
-    FILE *save_after_pass1 = fopen("output_pass1.txt", "w");
+    if (SYMLIST == NULL)
+        SYMLIST = node;
+    else
+    {
+        node->link = SYMLIST;
+        SYMLIST = node;
+    }
+}
+
+int pass1_main()
+{
+    int LOCCTR = 0;
+    int flag = 1;
+    int size = 1;
+    int value = 3;
+
+    FILE *open_sic_codes = fopen("input/input.sic", "r");
+    FILE *save_after_pass1 = fopen("output/output_pass1.txt", "w");
 
     while (1)
     {
-        read_line(open_sic_codes, NULL);
+        read_line(open_sic_codes, 1);
         if (!strcmp(LABEL, "."))
         {
             continue;
         }
         else
         {
-            if (!strcmp(OPCODE, "START") || flag == 1)
+            if (!strcmp(OPCODE, "START"))
             {
-                char *END;
-                START_LOC = (int)strtol(OPERAND, &END, 16);
-                LOCCTR = (int)strtol(OPERAND, &END, 16);
-                flag = 0;
+                if (flag == 1)
+                {
+                    char *END;
+                    START_LOC = (int)strtol(OPERANDS, &END, 16);
+                    LOCCTR = (int)strtol(OPERANDS, &END, 16);
+                    flag = 0;
+                }
+                else if (flag == 0)
+                {
+                    printf("ERROR - 1\n");
+                    exit(1);
+                }
             }
-            else if (LABEL[0] != '\0')
+
+            if (LABEL[0] != '\0')
             {
                 value = sym_tab_check();
                 if (value == 0)
                 {
+                    printf("value is 0\n");
                     add_sym_tab();
                 }
                 else
                 {
-                    printf("ERROR - 1");
+                    printf("ERROR - 2\n");
                     exit(1);
                 }
-            }
-            else
-            {
-                printf("ERROR - 2");
-                exit(1);
             }
         }
 
         if (strcmp(OPCODE, "END") == 0)
         {
             LENGTH = LOCCTR - START_LOC;
-            fprintf(save_after_pass1, "\t%s\t%s\t%s\n", LABEL, OPCODE, OPERAND);
+            fprintf(save_after_pass1, "\t%s\t%s\t%s\n", LABEL, OPCODE, OPERANDS);
             break;
         }
-        fprintf(save_after_pass1, "%d\t%s\t%s\t%s\n", LOCCTR, LABEL, OPCODE, OPERAND);
+        fprintf(save_after_pass1, "%d\t%s\t%s\t%s\n", LOCCTR, LABEL, OPCODE, OPERANDS);
 
         if (feof(open_sic_codes))
         {
-            printf("END");
+            printf("END\n");
             exit(1);
         }
 
         if (!strcmp(OPCODE, "BYTE"))
         {
-            if (!atoi(OPERAND))
+            if (!atoi(OPERANDS))
             {
                 int res;
                 int i;
@@ -81,21 +102,22 @@ int main()
             else if (!strcmp(OPCODE, "WORD") || search_opcode_tab())
                 LOCCTR = LOCCTR + 3;
             else if (!strcmp(OPCODE, "RESW"))
-                LOCCTR = LOCCTR + atoi(OPERAND) * 3;
+                LOCCTR = LOCCTR + atoi(OPERANDS) * 3;
             else if (!strcmp(OPCODE, "RESB"))
             {
-                size = atoi(OPERAND);
+                size = atoi(OPERANDS);
                 LOCCTR = LOCCTR + size;
             }
             else if (!strcmp(OPCODE, "END"))
                 printf("PASS1 종료\n");
             else
             {
-                printf("ERROR - 3");
+                printf("ERROR - 3\n");
                 exit(1);
             }
         }
     }
     fclose(open_sic_codes);
     fclose(save_after_pass1);
+    return 0;
 }

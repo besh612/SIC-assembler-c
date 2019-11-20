@@ -1,4 +1,4 @@
-#include "myLib.h";
+#include "myLib.h"
 
 char read_token(FILE *file, char *TOKEN)
 {
@@ -13,6 +13,16 @@ char read_token(FILE *file, char *TOKEN)
             return temp;
         }
     }
+    return 1;
+}
+
+void change_uppercase(char *data)
+{
+    for (int i = 0; i < strlen(data); i++)
+    {
+        if (data[i] >= 65 && data[i] >= 90)
+            data[i] -= 32;
+    }
 }
 
 void read_line(FILE *file, int state)
@@ -20,10 +30,11 @@ void read_line(FILE *file, int state)
     char temp[SIZE];
     char l_char;
 
-    // if (state != 1)
-    // {
-
-    // }
+    if (state != 1)
+    {
+        read_token(file, temp);
+        LOCCTR = atoi(temp);
+    }
 
     l_char = read_token(file, LABEL);
 
@@ -31,7 +42,7 @@ void read_line(FILE *file, int state)
     {
         if (l_char == '\t')
         {
-            char is_enter = NULL;
+            char is_enter;
             while (is_enter != '\n')
             {
                 is_enter = getc(file);
@@ -56,7 +67,7 @@ int sym_tab_check()
     SYMTAB *data = SYMLIST;
     while (data != NULL)
     {
-        if (!strcmp(&LABEL, data->LABEL))
+        if (!strcmp(LABEL, data->LABEL))
         {
             return 1;
         }
@@ -68,15 +79,15 @@ int sym_tab_check()
 void make_object_code(char *temp)
 {
     char code[7];
-    int length = strlen(temp);
+    int len = strlen(temp);
 
     for (int i = 5; i >= 0; i--)
-        if (length - 1 - (5 - i) > -1)
-            code[i] = temp[length - 1 - (5 - i)];
-    for (int i = 0; i < 6 - length; i++)
+        if (len - 1 - (5 - i) > -1)
+            code[i] = temp[len - 1 - (5 - i)];
+    for (int i = 0; i < 6 - len; i++)
         code[i] = '0';
     code[6] = '\0';
-    LtoH(code);
+    change_uppercase(code);
     strcpy(temp, code);
 }
 

@@ -13,10 +13,6 @@ char LABEL[SIZE];
 char OPCODE[SIZE];
 char OPERANDS[SIZE];
 
-SYMTAB *SYMLIST;
-OPCODES *OPLIST;
-OPCODETAB *OPCODELIST;
-
 typedef struct SYMTAB
 {
     char LABEL[SIZE];
@@ -40,8 +36,17 @@ typedef struct OPCODES
     struct OPCODES *link;
 } OPCODES;
 
+SYMTAB *SYMLIST;
+OPCODES *OPLIST;
+OPCODETAB *OPCODELIST;
+
 int sym_tab_check();
 int search_opcode_tab();
+int pass1_main();
+
 char read_token(FILE *file, char *TOKEN);
+
+void init_optable();
+void change_uppercase(char *data);
 void read_line(FILE *file, int state);
 void make_object_code(char *temp);

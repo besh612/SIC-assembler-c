@@ -1,14 +1,14 @@
-#include "myLib.h";
+#include "myLib.h"
 
 void init_optable()
 {
+    int hex;
     char opcode[6];
     char code_num[6];
-    int hex;
-    FILE *file = fopen("files/op_tab.sic", "r");
+    FILE *file = fopen("input/op_tab.sic", "r");
     while (!feof(file))
     {
-        fscanf(file, "$s\t$s", opcode, code_num);
+        fscanf(file, "%s\t%s", opcode, code_num);
         OPCODETAB *node = (OPCODETAB *)malloc(sizeof(OPCODETAB));
         hex = atoi(code_num);
         strcpy(node->NAME, opcode);
