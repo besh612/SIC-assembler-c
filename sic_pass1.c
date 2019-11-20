@@ -94,6 +94,7 @@ int pass1_main()
         else if (strcmp(OPCODE, "END") == 0)
         {
             LENGTH = LOCCTR - START_LOC;
+            printf("\t%s\t%s\t%s\n", LABEL, OPCODE, OPERANDS);
             printf("is end\nLENGTH[%d] = LOCCTR[%d] - START_LOC[%d]\n", LENGTH, LOCCTR, START_LOC);
             fprintf(save_after_pass1, "\t%s\t%s\t%s\n", LABEL, OPCODE, OPERANDS);
             break;
