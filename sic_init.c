@@ -1,4 +1,4 @@
-#include "myLib.h"
+#include "groupL_LIB.h"
 
 void init_optable()
 {
@@ -10,6 +10,7 @@ void init_optable()
     {
         fscanf(file, "%s\t%s", opcode, code_num);
         OPCODETAB *node = (OPCODETAB *)malloc(sizeof(OPCODETAB));
+        //atoi: 문자열을 정수로 변환
         hex = atoi(code_num);
         strcpy(node->NAME, opcode);
         node->HEXNUM = hex;
