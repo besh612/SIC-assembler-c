@@ -9,6 +9,5 @@ int main(int argc, char *argv[])
     }
     init_optable();
     pass1_main(argv[1]);
-    read_pass1_output();
-    output_pass2();
+    pass2_main();
 }
